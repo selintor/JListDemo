@@ -4,15 +4,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.JScrollPane;
-import java.io.FileWriter;
+import java.sql.SQLException;
+
 public class ListDemo extends javax.swing.JFrame {
     private JList lstLinks;
     private JPanel panel1;
@@ -24,6 +23,8 @@ public class ListDemo extends javax.swing.JFrame {
     private JLabel lblMessage;
     private JScrollPane scroll1;
     private JScrollBar scrollBar1;
+    private JButton btnHtml;
+    private JButton btnUpdate;
 
     DefaultListModel model;
     public ListDemo(){
@@ -34,12 +35,13 @@ public class ListDemo extends javax.swing.JFrame {
         setTitle("Swing List");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE );
 
+        //IT'S FOR THE LIST ELEMENTS IN GUI TO MAKE THEM CLICKABLE
 
-        lstLinks.addMouseListener(new MouseAdapter() {
+/*        lstLinks.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
+                String data = txtName.getText();
                 try {
-                    URI uri = new URI(txtName.getText());
-                    System.out.println(txtName.getText());
+                    URI uri = new URI(data);
                     Desktop desktop = null;
                     if (Desktop.isDesktopSupported()) {
                         desktop = Desktop.getDesktop();
@@ -53,16 +55,32 @@ public class ListDemo extends javax.swing.JFrame {
                     use.printStackTrace();
                 }
             }
-        });
+        });*/
 
         btnAdd.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                model.addElement(txtName.getText());
-                lblMessage.setText(txtName.getText() + " " + "linki listeye eklendi.");
-
+            public void actionPerformed(ActionEvent e){
                 String data = txtName.getText();
-                File file = new File("output.txt");
+                try {
+                    AddDb.sqlAdd(data);
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+                int size = lstLinks.getModel().getSize();
+                if (size < 10){
+                    String cutString = data.substring(0, 30);
+                    model.addElement(cutString);
+                    lblMessage.setText(cutString+ " " + "linki listeye ve veritabanına eklendi.");
+                }
+            }
+        });
+
+        btnHtml.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String data = txtName.getText();
+                String urlTemplate = "<a href=\"X\" class = \"links\"> X </a><br><br>";
+                File file = new File("links.html");
                 FileWriter fr = null;
                 try {
                     fr = new FileWriter(file, true);
@@ -71,11 +89,11 @@ public class ListDemo extends javax.swing.JFrame {
                 }
                 BufferedWriter br = new BufferedWriter(fr);
                 try {
-                    br.write(data + "\n");
+                    br.write((urlTemplate.replace("X", data)));
+                    br.write("\n");
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
-
                 try {
                     br.close();
                 } catch (IOException ex) {
@@ -92,8 +110,9 @@ public class ListDemo extends javax.swing.JFrame {
         btnRemove.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                model.removeElement(txtName.getText());
-                lblMessage.setText(txtName.getText() + " " + "linki listeden silindi.");
+                String data = txtName.getText();
+                model.removeElement(data);
+                lblMessage.setText(data + " " + "linki listeden silindi.");
             }
         });
 
@@ -101,9 +120,33 @@ public class ListDemo extends javax.swing.JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int index = lstLinks.getSelectedIndex();
+                String data = txtName.getText();
                 if (index != -1){
-                    model.removeElementAt(index);
-                    lblMessage.setText(" ");
+                    try {
+                        DeleteDb.deleteSql(data);
+                    } catch (SQLException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    lblMessage.setText(data + " " + "linki veritabanından silindi.");
+                }
+                else{
+                    lblMessage.setText("Seçili link yok!");
+                }
+            }
+        });
+
+        btnUpdate.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String data = txtName.getText();
+                int index = lstLinks.getSelectedIndex();
+                if (index != -1){
+                    try {
+                        UpdateDb.updateSql(data);
+                    } catch (SQLException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    lblMessage.setText("Veritabanındaki" + " " + data + " " + "linki güncellendi.");
                 }
                 else{
                     lblMessage.setText("Seçili link yok!");
