@@ -11,6 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.JScrollPane;
 import java.sql.SQLException;
+import java.util.Map;
 
 public class ListDemo extends javax.swing.JFrame {
     private JList lstLinks;
@@ -25,8 +26,8 @@ public class ListDemo extends javax.swing.JFrame {
     private JScrollBar scrollBar1;
     private JButton btnHtml;
     private JButton btnUpdate;
-
     DefaultListModel model;
+
     public ListDemo(){
         add(panel1);
         model = new DefaultListModel();
@@ -36,7 +37,6 @@ public class ListDemo extends javax.swing.JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE );
 
         //IT'S FOR THE LIST ELEMENTS IN GUI TO MAKE THEM CLICKABLE
-
 /*        lstLinks.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 String data = txtName.getText();
@@ -46,7 +46,6 @@ public class ListDemo extends javax.swing.JFrame {
                     if (Desktop.isDesktopSupported()) {
                         desktop = Desktop.getDesktop();
                     }
-
                     if (desktop != null)
                         desktop.browse(uri);
                 } catch (IOException ioe) {
@@ -56,24 +55,6 @@ public class ListDemo extends javax.swing.JFrame {
                 }
             }
         });*/
-
-        btnAdd.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e){
-                String data = txtName.getText();
-                try {
-                    AddDb.sqlAdd(data);
-                } catch (SQLException ex) {
-                    throw new RuntimeException(ex);
-                }
-                int size = lstLinks.getModel().getSize();
-                if (size < 10){
-                    String cutString = data.substring(0, 30);
-                    model.addElement(cutString);
-                    lblMessage.setText(cutString+ " " + "linki listeye ve veritabanına eklendi.");
-                }
-            }
-        });
 
         btnHtml.addActionListener(new ActionListener() {
             @Override
@@ -103,6 +84,24 @@ public class ListDemo extends javax.swing.JFrame {
                     fr.close();
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
+                }
+            }
+        });
+        btnAdd.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e){
+                String data = txtName.getText();
+                try {
+                    AddDb.sqlAdd(data);
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+                int size = lstLinks.getModel().getSize();
+                if (size < 10){
+                    //THE REASON THAT I SET LIMIT 20 IS I WANTED TO MAKE IT EASIER FOR MY TESTS
+                    String cutString = data.substring(0, 20);
+                    model.addElement(cutString);
+                    lblMessage.setText(cutString+ " " + "linki listeye ve veritabanına eklendi.");
                 }
             }
         });
@@ -138,15 +137,18 @@ public class ListDemo extends javax.swing.JFrame {
         btnUpdate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String data = txtName.getText();
+                String oldData = txtName.getText();
                 int index = lstLinks.getSelectedIndex();
+                int id;
                 if (index != -1){
                     try {
-                        UpdateDb.updateSql(data);
+                        id = GetSQLId.getId(oldData);
+                        UpdateWindow updateWindow = new UpdateWindow(id);
+                        updateWindow.setVisible(true);
                     } catch (SQLException ex) {
                         throw new RuntimeException(ex);
                     }
-                    lblMessage.setText("Veritabanındaki" + " " + data + " " + "linki güncellendi.");
+                    lblMessage.setText(oldData + " " + "linki veritabanında güncellenecek.");
                 }
                 else{
                     lblMessage.setText("Seçili link yok!");
@@ -154,7 +156,6 @@ public class ListDemo extends javax.swing.JFrame {
             }
         });
     }
-
     public static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

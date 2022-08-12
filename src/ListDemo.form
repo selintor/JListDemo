@@ -101,6 +101,7 @@
               <foreground color="-1"/>
               <layoutOrientation value="0"/>
               <model/>
+              <selectionBackground color="-13876386"/>
             </properties>
             <clientProperties>
               <List.isFileList class="java.lang.Boolean" value="false"/>
@@ -126,17 +127,6 @@
               <visibleAmount value="5"/>
             </properties>
           </component>
-          <component id="45bb" class="javax.swing.JButton" binding="btnHtml">
-            <constraints>
-              <grid row="8" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <background color="-11099685"/>
-              <font name="Droid Sans Mono" size="14" style="1"/>
-              <foreground color="-11099685"/>
-              <text value="CREATE HTML"/>
-            </properties>
-          </component>
           <component id="5ffb5" class="javax.swing.JButton" binding="btnUpdate">
             <constraints>
               <grid row="8" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
@@ -147,7 +137,7 @@
               <foreground color="-11099685"/>
               <hideActionText value="false"/>
               <horizontalAlignment value="0"/>
-              <text value="UPDATE SQL"/>
+              <text value="UPDATE LINK"/>
               <verticalAlignment value="0"/>
               <verticalTextPosition value="0"/>
             </properties>
@@ -164,17 +154,6 @@
               <text value="REMOVE LINK"/>
             </properties>
           </component>
-          <component id="c3f4f" class="javax.swing.JButton" binding="btnRemoveSelected">
-            <constraints>
-              <grid row="8" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <background color="-11099685"/>
-              <font name="Droid Sans Mono" size="14" style="1"/>
-              <foreground color="-11099685"/>
-              <text value="REMOVE SQL"/>
-            </properties>
-          </component>
           <vspacer id="868ce">
             <constraints>
               <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
@@ -185,6 +164,28 @@
               <grid row="11" column="3" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
             </constraints>
           </vspacer>
+          <component id="45bb" class="javax.swing.JButton" binding="btnHtml">
+            <constraints>
+              <grid row="8" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <background color="-11099685"/>
+              <font name="Droid Sans Mono" size="14" style="1"/>
+              <foreground color="-11099685"/>
+              <text value="CREATE HTML"/>
+            </properties>
+          </component>
+          <component id="c3f4f" class="javax.swing.JButton" binding="btnRemoveSelected">
+            <constraints>
+              <grid row="8" column="2" row-span="1" col-span="3" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <background color="-11099685"/>
+              <font name="Droid Sans Mono" size="14" style="1"/>
+              <foreground color="-11099685"/>
+              <text value="REMOVE SQL"/>
+            </properties>
+          </component>
         </children>
       </grid>
     </children>
